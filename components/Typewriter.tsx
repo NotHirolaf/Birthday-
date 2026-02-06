@@ -12,7 +12,6 @@ interface TypewriterProps {
 export default function Typewriter({ text, onComplete, instant }: TypewriterProps) {
     const [displayedText, setDisplayedText] = useState("");
     const [isDone, setIsDone] = useState(false);
-    const indexRef = useRef(0);
     const onCompleteRef = useRef(onComplete);
 
     // Update ref when onComplete changes
@@ -20,49 +19,51 @@ export default function Typewriter({ text, onComplete, instant }: TypewriterProp
         onCompleteRef.current = onComplete;
     }, [onComplete]);
 
+    // Handle instant mode and resets
     useEffect(() => {
-        // If instant mode, show full text immediately
         if (instant) {
             setDisplayedText(text);
             setIsDone(true);
-            if (onCompleteRef.current) {
-                onCompleteRef.current();
-            }
-            return;
+            // Use a small timeout to allow render to complete before callback
+            const timeout = setTimeout(() => {
+                if (onCompleteRef.current) onCompleteRef.current();
+            }, 0);
+            return () => clearTimeout(timeout);
+        }
+        // Reset only if text changes and we aren't already matching (prevents loop)
+        if (displayedText !== "" && displayedText !== text && !text.startsWith(displayedText)) {
+            setDisplayedText("");
+            setIsDone(false);
+        } else if (text !== displayedText && displayedText === "") {
+            // Initial start
+            setIsDone(false);
+        }
+    }, [instant, text, displayedText]);
+
+    // Typing Effect
+    useEffect(() => {
+        if (instant || isDone) return;
+
+        // If finished typing
+        if (displayedText.length >= text.length) {
+            setIsDone(true);
+            if (!instant) triggerConfetti();
+            const timeout = setTimeout(() => {
+                if (onCompleteRef.current) onCompleteRef.current();
+            }, 500);
+            return () => clearTimeout(timeout);
         }
 
-        // Reset state only if text actually changes
-        setDisplayedText("");
-        setIsDone(false);
-        indexRef.current = 0;
-    }, [text, instant]); // Removed onComplete from dependencies
+        // Type next character
+        const isStarting = displayedText === "";
+        const delay = isStarting ? 500 : (Math.random() * 50 + 30);
 
-    useEffect(() => {
-        if (isDone || instant) return;
+        const timeoutId = setTimeout(() => {
+            setDisplayedText(text.slice(0, displayedText.length + 1));
+        }, delay);
 
-        const typeChar = () => {
-            if (indexRef.current < text.length) {
-                setDisplayedText((prev) => prev + text.charAt(indexRef.current));
-                indexRef.current++;
-
-                // Randomize typing speed for "human" feel
-                const delay = Math.random() * 50 + 30; // 30ms to 80ms
-                setTimeout(typeChar, delay);
-            } else {
-                setIsDone(true);
-                if (onCompleteRef.current) {
-                    // Wait a moment *after* the last character before triggering completion events
-                    setTimeout(() => onCompleteRef.current?.(), 500);
-                }
-                if (!instant) {
-                    triggerConfetti();
-                }
-            }
-        };
-
-        const timeoutId = setTimeout(typeChar, 500); // Initial delay
         return () => clearTimeout(timeoutId);
-    }, [text, isDone, instant]); // Removed onComplete from dependencies
+    }, [displayedText, text, instant, isDone]);
 
     const triggerConfetti = () => {
         const duration = 3000;
