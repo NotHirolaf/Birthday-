@@ -63,7 +63,7 @@ export default function Typewriter({ text, onComplete, instant }: TypewriterProp
         }, delay);
 
         return () => clearTimeout(timeoutId);
-    }, [displayedText, text, instant, isDone]);
+    }, [displayedText, text, instant]);
 
     const triggerConfetti = () => {
         const duration = 3000;
