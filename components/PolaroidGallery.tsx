@@ -223,15 +223,16 @@ export default function PolaroidGallery({ onBack }: PolaroidGalleryProps) {
                 ))}
             </div>
 
-            {/* Back Button */}
+            {/* Back Button - Top Left Corner */}
             <motion.button
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 2, duration: 0.4 }}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 1.5, duration: 0.4 }}
                 onClick={onBack}
-                className="fixed bottom-8 left-1/2 -translate-x-1/2 px-6 py-3 bg-[#c15f5f] text-white rounded-full font-serif text-sm hover:bg-[#a34040] transition-colors shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 z-50"
+                className="fixed top-8 left-8 px-5 py-2.5 bg-white/90 backdrop-blur-sm text-[#4a4a4a] rounded-full font-serif text-sm hover:bg-white hover:shadow-lg transition-all shadow-md border border-[#dcd8d0] z-50 flex items-center gap-2"
             >
-                ← Back to Letter
+                <span className="text-lg">←</span>
+                <span>Back</span>
             </motion.button>
         </motion.div>
     );
