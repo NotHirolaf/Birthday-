@@ -17,17 +17,11 @@ export default function Home() {
   const [isMuted, setIsMuted] = useState(false);
 
   // Placeholder message - easy to edit
-  const letterText = `
-Dear Emma,
+  const letterText = `Dear Emma,
 
-Happy 19th Birthday! You are officially old now. Just kidding. On this special day, I just wanted to take the time to appreciate 
-and thank you for being such a good friend to me. I know we haven't known each other for that long, but you have made the transition
-into university much easier and more fun. I hope this is only the beginning of our friendship and that we will continue to make many
-more memories together in Gangalang. 
+Happy 19th Birthday! You are officially old now. Just kidding. On this special day, I just wanted to take the time to appreciate and thank you for being such a good friend to me. I know we haven't known each other for that long, but you have made the transition into university much easier and more fun. I hope this is only the beginning of our friendship and that we will continue to make many more memories together in Gangalang. 
 
-Seriously though, thank you for everything. Especially for all the food and snacks :p. Keep being the kind person you are and light up
-the lives of those around you. Don't worry too much about things, I am sure you will be successful in whatever you choose to do. I hope
-you enjoyed your day today, you deserve it :).
+Seriously though, thank you for everything. Especially for all the food and snacks :p. Keep being the kind person you are and light up the lives of those around you. Don't worry too much about things, I am sure you will be successful in whatever you choose to do. I hope you enjoyed your day today, you deserve it :).
 
 Your Friend,
 Farrel`;
@@ -78,9 +72,9 @@ Farrel`;
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="flex items-center justify-center min-h-screen p-8 z-20 relative"
+            className="flex items-center justify-center min-h-screen p-4 sm:p-8 z-20 relative"
           >
-            <div className="max-w-2xl w-full bg-[#fdfbf7] shadow-2xl border border-[#dcd8d0] rounded-sm p-12 relative">
+            <div className="max-w-2xl w-full bg-[#fdfbf7] shadow-2xl border border-[#dcd8d0] rounded-sm p-8 sm:p-12 relative max-h-[80vh] overflow-y-auto custom-scrollbar">
               <Typewriter text={letterText} onComplete={() => setLetterComplete(true)} instant={letterComplete} />
 
               {/* Decorative Sticker - top right corner */}

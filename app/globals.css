@@ -14,10 +14,28 @@
 }
 
 body {
-  background: radial-gradient(circle at 50% 50%, #fdfbf7 0%, #f5f0e6 100%);
+  background: #ebe6da;
   color: var(--color-ink);
   font-family: var(--font-serif);
   position: relative;
+}
+
+/* Custom Scrollbar for Letter */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #dcd8d0;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #c0b8a8;
 }
 
 /* Paper Grain Overlay */
