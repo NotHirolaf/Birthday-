@@ -114,7 +114,7 @@ export default function PolaroidGallery({ onBack }: PolaroidGalleryProps) {
                 transition={{ delay: 0.3, duration: 0.6 }}
                 className="text-4xl font-serif text-center mt-12 mb-8 text-[#4a4a4a]"
             >
-                Our Memories Together ✨
+                Gangalang Memories ✨
             </motion.h2>
 
             {/* Top Row - Slides from left */}
