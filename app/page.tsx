@@ -6,9 +6,12 @@ import BackgroundLeaves from "@/components/BackgroundLeaves";
 import Envelope from "@/components/Envelope";
 import Typewriter from "@/components/Typewriter";
 import FloatingParticles from "@/components/FloatingParticles";
+import PolaroidGallery from "@/components/PolaroidGallery";
 
 export default function Home() {
   const [showLetter, setShowLetter] = useState(false);
+  const [letterComplete, setLetterComplete] = useState(false);
+  const [showPhotos, setShowPhotos] = useState(false);
   const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
   const [volume, setVolume] = useState(50);
   const [isMuted, setIsMuted] = useState(false);
@@ -54,7 +57,7 @@ With all my love,
       <BackgroundLeaves />
       <FloatingParticles />
 
-      {/* Envelope or Letter */}
+      {/* Envelope, Letter, or Photo Gallery */}
       <AnimatePresence mode="wait">
         {!showLetter ? (
           <Envelope
@@ -62,6 +65,8 @@ With all my love,
             onOpen={() => setShowLetter(true)}
             onAudioReady={(audio) => setAudioElement(audio)}
           />
+        ) : showPhotos ? (
+          <PolaroidGallery key="photos" onBack={() => setShowPhotos(false)} />
         ) : (
           <motion.div
             key="letter"
@@ -72,7 +77,20 @@ With all my love,
             className="flex items-center justify-center min-h-screen p-8 z-20 relative"
           >
             <div className="max-w-2xl w-full bg-[#fdfbf7] shadow-2xl border border-[#dcd8d0] rounded-sm p-12 relative">
-              <Typewriter text={letterText} />
+              <Typewriter text={letterText} onComplete={() => setLetterComplete(true)} />
+
+              {/* View Memories Button */}
+              {letterComplete && (
+                <motion.button
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5, duration: 0.4 }}
+                  onClick={() => setShowPhotos(true)}
+                  className="mt-8 mx-auto block px-6 py-3 bg-[#c15f5f] text-white rounded-full font-serif text-sm hover:bg-[#a34040] transition-colors shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
+                >
+                  📸 View Memories
+                </motion.button>
+              )}
             </div>
           </motion.div>
         )}
