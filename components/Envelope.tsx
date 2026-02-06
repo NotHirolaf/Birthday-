@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { useState, useRef } from "react";
 
-export default function Envelope({ onOpen }: { onOpen: () => void }) {
+export default function Envelope({ onOpen, onAudioReady }: { onOpen: () => void; onAudioReady?: (audio: HTMLAudioElement) => void }) {
     const [step, setStep] = useState<"closed" | "opening" | "opened">("closed");
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -15,9 +15,12 @@ export default function Envelope({ onOpen }: { onOpen: () => void }) {
         if (!audioRef.current) {
             audioRef.current = new Audio('/one-summers-day.mp3');
             audioRef.current.volume = 0.5;
+            if (onAudioReady) {
+                onAudioReady(audioRef.current);
+            }
         }
 
-        audioRef.current.currentTime = 0;
+        audioRef.current.currentTime = 7; // Start at 7 seconds (skip intro)
         audioRef.current.play().catch(error => {
             console.log("Audio playback error:", error);
         });

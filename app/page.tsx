@@ -9,58 +9,111 @@ import FloatingParticles from "@/components/FloatingParticles";
 
 export default function Home() {
   const [showLetter, setShowLetter] = useState(false);
+  const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
+  const [volume, setVolume] = useState(50);
+  const [isMuted, setIsMuted] = useState(false);
 
   // Placeholder message - easy to edit
   const letterText = `Dearest Emma,
 
 Happy Birthday!
 
-I hope your day is as magical and peaceful as a quiet afternoon in the countryside. May your year be filled with small wonders, gentle breezes, and the warmth of good company.
+On this special day, I wanted to create something as unique and wonderful as you are. 
 
-Just like the leaves drifting in the wind, may you find beauty in every moment.
+May your day be filled with joy, laughter, and all the magic you bring into the world.
 
 With all my love,
 [Your Name]`;
 
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseInt(e.target.value);
+    setVolume(newVolume);
+    if (audioElement) {
+      audioElement.volume = newVolume / 100;
+      if (newVolume > 0 && isMuted) {
+        setIsMuted(false);
+      }
+    }
+  };
+
+  const toggleMute = () => {
+    if (audioElement) {
+      if (isMuted) {
+        audioElement.volume = volume / 100;
+        setIsMuted(false);
+      } else {
+        audioElement.volume = 0;
+        setIsMuted(true);
+      }
+    }
+  };
+
   return (
-    <main className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden p-4">
-      {/* Background Layer */}
+    <main className="relative min-h-screen overflow-hidden">
+      {/* Background Layers */}
       <BackgroundLeaves />
       <FloatingParticles />
 
-      <div className="z-10 w-full max-w-2xl flex flex-col items-center justify-center min-h-[50vh]">
-        <AnimatePresence mode="wait">
-          {!showLetter ? (
-            <motion.div
-              key="envelope"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.5 } }}
-              className="w-full flex justify-center"
-            >
-              <Envelope onOpen={() => setShowLetter(true)} />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="letter"
-              initial={{ opacity: 0, y: 20, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-              className="relative bg-white/90 backdrop-blur-sm p-8 md:p-12 rounded-lg shadow-lg border border-[#e8e4d9] w-full max-w-lg md:max-w-2xl overflow-y-auto max-h-[80vh] scrollbar-hide"
-            >
-              {/* Paper Texture Overlay for Letter */}
-              <div className="absolute inset-0 pointer-events-none opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')]" />
+      {/* Envelope or Letter */}
+      <AnimatePresence mode="wait">
+        {!showLetter ? (
+          <Envelope
+            key="envelope"
+            onOpen={() => setShowLetter(true)}
+            onAudioReady={(audio) => setAudioElement(audio)}
+          />
+        ) : (
+          <motion.div
+            key="letter"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="flex items-center justify-center min-h-screen p-8 z-20 relative"
+          >
+            <div className="max-w-2xl w-full bg-[#fdfbf7] shadow-2xl border border-[#dcd8d0] rounded-sm p-12 relative">
+              <Typewriter text={letterText} />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-              <div className="relative z-10">
-                <Typewriter text={letterText} />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+      {/* Volume Control - appears when letter is shown */}
+      {showLetter && audioElement && (
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.5, duration: 0.4 }}
+          className="fixed top-8 right-8 z-50 bg-[#fdfbf7]/95 backdrop-blur-sm px-5 py-3 rounded-full shadow-xl border border-[#dcd8d0]"
+        >
+          <div className="flex items-center gap-4">
+            <button
+              onClick={toggleMute}
+              className="text-lg hover:scale-110 transition-transform active:scale-95"
+              title={isMuted ? "Unmute" : "Mute"}
+            >
+              {isMuted ? "🔇" : volume > 50 ? "🔊" : volume > 0 ? "🔉" : "🔈"}
+            </button>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={isMuted ? 0 : volume}
+              onChange={handleVolumeChange}
+              className="w-32 h-2 rounded-full appearance-none cursor-pointer"
+              style={{
+                background: `linear-gradient(to right, #c15f5f 0%, #c15f5f ${isMuted ? 0 : volume}%, #e8e4d9 ${isMuted ? 0 : volume}%, #e8e4d9 100%)`
+              }}
+            />
+            <span className="text-sm text-[#4a4a4a] font-serif min-w-[3rem] text-center font-medium">
+              {isMuted ? "0%" : `${volume}%`}
+            </span>
+          </div>
+        </motion.div>
+      )}
 
       {/* Footer / Credits */}
-      <div className="fixed bottom-4 text-xs text-[#4a4a4a] opacity-50 font-serif z-50">
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 text-xs text-[#4a4a4a] opacity-50 font-serif z-40">
         Emma's Birthday Letter
       </div>
     </main>
