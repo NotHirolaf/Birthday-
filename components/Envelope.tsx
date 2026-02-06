@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import { useState, useRef } from "react";
 
+import MapleLeafIcon from "./MapleLeafIcon";
+
 export default function Envelope({ onOpen, onAudioReady }: { onOpen: () => void; onAudioReady?: (audio: HTMLAudioElement) => void }) {
     const [step, setStep] = useState<"closed" | "opening" | "opened">("closed");
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -78,16 +80,15 @@ export default function Envelope({ onOpen, onAudioReady }: { onOpen: () => void;
                     animate={step !== "closed" ? { rotateX: 180, zIndex: 1 } : { rotateX: 0 }}
                     transition={{ duration: 0.6, ease: "easeInOut" }}
                 >
-                    {/* Wax Seal attached to Flap */}
+                    {/* Maple Leaf Sticker attached to Flap */}
                     <motion.div
-                        className="absolute -top-[55px] left-1/2 transform -translate-x-1/2 w-10 h-10 rounded-full bg-[#c15f5f] shadow-sm flex items-center justify-center border-2 border-[#a34040]"
+                        className="absolute -top-[50px] left-1/2 transform -translate-x-1/2 z-50"
                         animate={step !== "closed" ? { opacity: 0 } : { opacity: 1 }}
                         transition={{ duration: 0.2 }}
                     >
-                        <span className="text-white text-sm font-serif">♥</span>
+                        <MapleLeafIcon size={55} rotation={15} shadow={2} />
                     </motion.div>
                 </motion.div>
-
             </motion.div>
         </div>
     );
