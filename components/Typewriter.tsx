@@ -6,22 +6,33 @@ import confetti from "canvas-confetti";
 interface TypewriterProps {
     text: string;
     onComplete?: () => void;
+    instant?: boolean; // Show full text immediately without typing animation
 }
 
-export default function Typewriter({ text, onComplete }: TypewriterProps) {
+export default function Typewriter({ text, onComplete, instant }: TypewriterProps) {
     const [displayedText, setDisplayedText] = useState("");
     const [isDone, setIsDone] = useState(false);
     const indexRef = useRef(0);
 
     useEffect(() => {
+        // If instant mode, show full text immediately
+        if (instant) {
+            setDisplayedText(text);
+            setIsDone(true);
+            if (onComplete) {
+                onComplete();
+            }
+            return;
+        }
+
         // Reset state if text changes
         setDisplayedText("");
         setIsDone(false);
         indexRef.current = 0;
-    }, [text]);
+    }, [text, instant, onComplete]);
 
     useEffect(() => {
-        if (isDone) return;
+        if (isDone || instant) return;
 
         const typeChar = () => {
             if (indexRef.current < text.length) {
@@ -37,13 +48,15 @@ export default function Typewriter({ text, onComplete }: TypewriterProps) {
                     // Wait a moment *after* the last character before triggering completion events
                     setTimeout(onComplete, 500);
                 }
-                triggerConfetti();
+                if (!instant) {
+                    triggerConfetti();
+                }
             }
         };
 
         const timeoutId = setTimeout(typeChar, 500); // Initial delay
         return () => clearTimeout(timeoutId);
-    }, [text, isDone, onComplete]);
+    }, [text, isDone, onComplete, instant]);
 
     const triggerConfetti = () => {
         const duration = 3000;
@@ -84,7 +97,7 @@ export default function Typewriter({ text, onComplete }: TypewriterProps) {
     return (
         <div className="font-serif text-lg md:text-xl leading-relaxed whitespace-pre-wrap">
             {displayedText}
-            <span className="animate-pulse">|</span>
+            {!isDone && <span className="animate-pulse">|</span>}
         </div>
     );
 }

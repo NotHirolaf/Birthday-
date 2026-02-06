@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState } from "react";
 import Polaroid from "./Polaroid";
 
 interface Photo {
@@ -18,6 +19,7 @@ interface PolaroidGalleryProps {
 }
 
 export default function PolaroidGallery({ onBack }: PolaroidGalleryProps) {
+    const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
     // Strategically positioned photos in two rows
     const topRowPhotos: Photo[] = [
         {
@@ -148,6 +150,7 @@ export default function PolaroidGallery({ onBack }: PolaroidGalleryProps) {
                                 transform: `rotate(${photo.rotation}deg)`,
                                 width: '220px'
                             }}
+                            onClick={() => setSelectedPhoto(photo)}
                         >
                             {/* Photo */}
                             <div className="w-full h-60 bg-gray-900 relative overflow-hidden">
@@ -202,6 +205,7 @@ export default function PolaroidGallery({ onBack }: PolaroidGalleryProps) {
                                 transform: `rotate(${photo.rotation}deg)`,
                                 width: '220px'
                             }}
+                            onClick={() => setSelectedPhoto(photo)}
                         >
                             {/* Photo */}
                             <div className="w-full h-60 bg-gray-900 relative overflow-hidden">
@@ -234,6 +238,47 @@ export default function PolaroidGallery({ onBack }: PolaroidGalleryProps) {
                 <span className="text-lg">←</span>
                 <span>Back</span>
             </motion.button>
+
+            {/* Zoom Modal */}
+            {selectedPhoto && (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={() => setSelectedPhoto(null)}
+                    className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-8 cursor-pointer"
+                >
+                    <motion.div
+                        initial={{ scale: 0.8, rotate: selectedPhoto.rotation }}
+                        animate={{ scale: 1, rotate: 0 }}
+                        transition={{ duration: 0.4, ease: "easeOut" }}
+                        onClick={(e) => e.stopPropagation()}
+                        className="relative max-w-4xl max-h-[90vh] cursor-default"
+                    >
+                        {/* Close Button */}
+                        <button
+                            onClick={() => setSelectedPhoto(null)}
+                            className="absolute -top-4 -right-4 bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-xl hover:bg-gray-100 transition-colors z-10 cursor-pointer"
+                        >
+                            <span className="text-2xl text-gray-700">×</span>
+                        </button>
+
+                        {/* Enlarged Polaroid */}
+                        <div className="bg-white p-6 pb-12 shadow-2xl">
+                            <img
+                                src={selectedPhoto.src}
+                                alt={selectedPhoto.caption || `Photo ${selectedPhoto.id}`}
+                                className="w-full h-auto max-h-[70vh] object-contain"
+                            />
+                            {selectedPhoto.caption && (
+                                <div className="mt-4 text-center font-serif text-lg text-gray-700">
+                                    {selectedPhoto.caption}
+                                </div>
+                            )}
+                        </div>
+                    </motion.div>
+                </motion.div>
+            )}
         </motion.div>
     );
 }

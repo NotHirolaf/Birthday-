@@ -77,7 +77,7 @@ With all my love,
             className="flex items-center justify-center min-h-screen p-8 z-20 relative"
           >
             <div className="max-w-2xl w-full bg-[#fdfbf7] shadow-2xl border border-[#dcd8d0] rounded-sm p-12 relative">
-              <Typewriter text={letterText} onComplete={() => setLetterComplete(true)} />
+              <Typewriter text={letterText} onComplete={() => setLetterComplete(true)} instant={letterComplete} />
 
               {/* View Memories Button */}
               {letterComplete && (
