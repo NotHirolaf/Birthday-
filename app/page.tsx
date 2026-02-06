@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import BackgroundLeaves from "@/components/BackgroundLeaves";
 import Envelope from "@/components/Envelope";
 import Typewriter from "@/components/Typewriter";
+import FloatingParticles from "@/components/FloatingParticles";
 
 export default function Home() {
   const [showLetter, setShowLetter] = useState(false);
@@ -25,6 +26,7 @@ With all my love,
     <main className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden p-4">
       {/* Background Layer */}
       <BackgroundLeaves />
+      <FloatingParticles />
 
       <div className="z-10 w-full max-w-2xl flex flex-col items-center justify-center min-h-[50vh]">
         <AnimatePresence mode="wait">
@@ -59,7 +61,7 @@ With all my love,
 
       {/* Footer / Credits */}
       <div className="fixed bottom-4 text-xs text-[#4a4a4a] opacity-50 font-serif z-50">
-        Inspired by Studio Ghibli
+        Emma's Birthday Letter
       </div>
     </main>
   );

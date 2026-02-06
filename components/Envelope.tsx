@@ -1,72 +1,90 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
-import { Mail } from "lucide-react"; // Fallback icon or decoration
+import { useState, useRef } from "react";
 
 export default function Envelope({ onOpen }: { onOpen: () => void }) {
-    const [isOpen, setIsOpen] = useState(false);
+    const [step, setStep] = useState<"closed" | "opening" | "opened">("closed");
+    const audioRef = useRef<HTMLAudioElement | null>(null);
 
     const handleOpen = () => {
-        if (isOpen) return;
-        setIsOpen(true);
-        // Play audio
-        const audio = new Audio("https://actions.google.com/sounds/v1/ambiences/coffee_shop.ogg"); // Placeholder loop
-        // Ideally we'd use a specific piano track. 
-        // audio.loop = true; // Use loop if it was a track
-        // audio.play().catch(e => console.log("Audio autoplay failed", e)); 
+        if (step !== "closed") return;
+        setStep("opening");
 
-        // Delay calling onOpen to allow animation to play
+        // Create and play audio only when envelope is opened
+        if (!audioRef.current) {
+            audioRef.current = new Audio('/one-summers-day.mp3');
+            audioRef.current.volume = 0.5;
+        }
+
+        audioRef.current.currentTime = 0;
+        audioRef.current.play().catch(error => {
+            console.log("Audio playback error:", error);
+        });
+
         setTimeout(() => {
             onOpen();
-        }, 800);
+        }, 1500);
     };
 
     return (
-        <div className="relative flex items-center justify-center h-screen w-full z-10">
+        <div className="relative flex items-center justify-center h-screen w-full z-10 pointer-events-none">
             <motion.div
-                className="relative w-64 h-40 bg-[#fdfbf7] shadow-xl rounded-sm cursor-pointer border border-gray-200"
-                initial={{ scale: 1, rotate: 0 }}
-                animate={
-                    isOpen
-                        ? { scale: 0, opacity: 0 } // Disappear as letter takes over
-                        : {
-                            rotate: [0, -1, 1, -1, 0],
-                            scale: [1, 1.02, 1, 1.02, 1],
-                        }
-                }
-                transition={
-                    isOpen
-                        ? { duration: 0.5 }
-                        : {
-                            repeat: Infinity,
-                            repeatDelay: 2, // Shake every 2 seconds
-                            duration: 0.5,
-                        }
-                }
-                whileHover={{ scale: 1.05, rotate: [-1, 1, -1] }}
+                className="relative pointer-events-auto cursor-pointer"
                 onClick={handleOpen}
+                animate={step === "closed" ? {
+                    rotate: [0, -1, 1, -1, 0],
+                    scale: [1, 1.02, 1, 1.02, 1]
+                } : {}}
+                transition={step === "closed" ? {
+                    duration: 2.5,
+                    repeat: Infinity,
+                    repeatDelay: 1,
+                    ease: "easeInOut"
+                } : {}}
             >
-                {/* Envelope Flap (Closed) */}
-                {!isOpen && (
-                    <motion.div
-                        className="absolute top-0 left-0 w-full h-0 border-l-[128px] border-l-transparent border-r-[128px] border-r-transparent border-t-[80px] border-t-[#e8e4d9] origin-top"
-                    />
-                )}
 
-                {/* Wax Seal */}
-                {!isOpen && (
+                {/* The Letter Card (Hidden inside initially) */}
+                <motion.div
+                    className="absolute left-4 right-4 top-2 h-32 bg-white shadow-sm z-10"
+                    initial={{ y: 0 }}
+                    animate={step === "opening" ? { y: -100 } : { y: 0 }}
+                    transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
+                >
+                    <div className="p-4 space-y-2 opacity-30">
+                        <div className="w-full h-1 bg-gray-200 rounded" />
+                        <div className="w-full h-1 bg-gray-200 rounded" />
+                        <div className="w-2/3 h-1 bg-gray-200 rounded" />
+                    </div>
+                </motion.div>
+
+                {/* Envelope Back Body */}
+                <div className="relative w-72 h-44 bg-[#f0ede6] shadow-xl rounded-sm z-20 overflow-hidden border border-[#dcd8d0]">
+                    {/* Pocket pattern/shading */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent top-10" />
+                </div>
+
+                {/* Envelope Front Body (The pocket part) */}
+                <div className="absolute bottom-0 left-0 w-full h-0 z-30 border-l-[144px] border-l-transparent border-r-[144px] border-r-transparent border-b-[90px] border-b-[#fcfaf7] drop-shadow-sm" />
+                <div className="absolute bottom-0 left-0 w-full h-0 z-30 border-l-[144px] border-l-transparent border-r-[144px] border-r-transparent border-b-[90px] border-b-[#f7f5f0] clip-path-polygon" />
+
+                {/* The Flap (Top triangle) */}
+                <motion.div
+                    className="absolute top-0 left-0 w-full h-0 z-40 border-l-[144px] border-l-transparent border-r-[144px] border-r-transparent border-t-[90px] border-t-[#ebe7e0] origin-top drop-shadow-md"
+                    initial={{ rotateX: 0 }}
+                    animate={step !== "closed" ? { rotateX: 180, zIndex: 1 } : { rotateX: 0 }}
+                    transition={{ duration: 0.6, ease: "easeInOut" }}
+                >
+                    {/* Wax Seal attached to Flap */}
                     <motion.div
-                        className="absolute top-8 left-1/2 transform -translate-x-1/2 w-8 h-8 rounded-full bg-[#c15f5f] shadow-sm flex items-center justify-center border-2 border-[#a34040]"
-                        initial={{ scale: 1 }}
-                        exit={{ scale: 0, opacity: 0 }}
+                        className="absolute -top-[55px] left-1/2 transform -translate-x-1/2 w-10 h-10 rounded-full bg-[#c15f5f] shadow-sm flex items-center justify-center border-2 border-[#a34040]"
+                        animate={step !== "closed" ? { opacity: 0 } : { opacity: 1 }}
+                        transition={{ duration: 0.2 }}
                     >
-                        <span className="text-white text-xs font-serif">♥</span>
+                        <span className="text-white text-sm font-serif">♥</span>
                     </motion.div>
-                )}
+                </motion.div>
 
-                {/* Envelope Body/Pouch Appearance */}
-                <div className="absolute bottom-0 left-0 w-full h-full pointer-events-none border-t border-gray-100 opacity-50" />
             </motion.div>
         </div>
     );
