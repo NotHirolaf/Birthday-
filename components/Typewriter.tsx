@@ -13,23 +13,29 @@ export default function Typewriter({ text, onComplete, instant }: TypewriterProp
     const [displayedText, setDisplayedText] = useState("");
     const [isDone, setIsDone] = useState(false);
     const indexRef = useRef(0);
+    const onCompleteRef = useRef(onComplete);
+
+    // Update ref when onComplete changes
+    useEffect(() => {
+        onCompleteRef.current = onComplete;
+    }, [onComplete]);
 
     useEffect(() => {
         // If instant mode, show full text immediately
         if (instant) {
             setDisplayedText(text);
             setIsDone(true);
-            if (onComplete) {
-                onComplete();
+            if (onCompleteRef.current) {
+                onCompleteRef.current();
             }
             return;
         }
 
-        // Reset state if text changes
+        // Reset state only if text actually changes
         setDisplayedText("");
         setIsDone(false);
         indexRef.current = 0;
-    }, [text, instant, onComplete]);
+    }, [text, instant]); // Removed onComplete from dependencies
 
     useEffect(() => {
         if (isDone || instant) return;
@@ -44,9 +50,9 @@ export default function Typewriter({ text, onComplete, instant }: TypewriterProp
                 setTimeout(typeChar, delay);
             } else {
                 setIsDone(true);
-                if (onComplete) {
+                if (onCompleteRef.current) {
                     // Wait a moment *after* the last character before triggering completion events
-                    setTimeout(onComplete, 500);
+                    setTimeout(() => onCompleteRef.current?.(), 500);
                 }
                 if (!instant) {
                     triggerConfetti();
@@ -56,7 +62,7 @@ export default function Typewriter({ text, onComplete, instant }: TypewriterProp
 
         const timeoutId = setTimeout(typeChar, 500); // Initial delay
         return () => clearTimeout(timeoutId);
-    }, [text, isDone, onComplete, instant]);
+    }, [text, isDone, instant]); // Removed onComplete from dependencies
 
     const triggerConfetti = () => {
         const duration = 3000;
