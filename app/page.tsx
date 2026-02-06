@@ -79,12 +79,33 @@ With all my love,
             <div className="max-w-2xl w-full bg-[#fdfbf7] shadow-2xl border border-[#dcd8d0] rounded-sm p-12 relative">
               <Typewriter text={letterText} onComplete={() => setLetterComplete(true)} instant={letterComplete} />
 
+              {/* Decorative Sticker - top right corner */}
+              {showLetter && (
+                <motion.img
+                  initial={{ opacity: 0, x: 50, y: -50, scale: 0.3, rotate: 45 }}
+                  animate={{ opacity: 1, x: 0, y: 0, scale: 1, rotate: 12 }}
+                  transition={{
+                    delay: 2,
+                    duration: 0.8,
+                    type: "spring",
+                    bounce: 0.4
+                  }}
+                  src="/pngegg.png"
+                  alt="Decorative sticker"
+                  className="absolute right-4 top-4 w-28 h-auto z-10"
+                  style={{
+                    filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.25))',
+                    transform: 'rotate(12deg)',
+                  }}
+                />
+              )}
+
               {/* View Memories Button */}
               {letterComplete && (
                 <motion.button
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5, duration: 0.4 }}
+                  transition={{ delay: 0.8, duration: 0.4 }}
                   onClick={() => setShowPhotos(true)}
                   className="mt-8 mx-auto block px-6 py-3 bg-[#c15f5f] text-white rounded-full font-serif text-sm hover:bg-[#a34040] transition-colors shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
                 >

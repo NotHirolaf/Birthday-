@@ -36,13 +36,13 @@ export default function Envelope({ onOpen, onAudioReady }: { onOpen: () => void;
                 className="relative pointer-events-auto cursor-pointer"
                 onClick={handleOpen}
                 animate={step === "closed" ? {
-                    rotate: [0, -1, 1, -1, 0],
-                    scale: [1, 1.02, 1, 1.02, 1]
+                    rotate: [0, -3, 3, -3, 0],
+                    scale: [1, 1.05, 1, 1.05, 1]
                 } : {}}
                 transition={step === "closed" ? {
-                    duration: 2.5,
+                    duration: 2,
                     repeat: Infinity,
-                    repeatDelay: 1,
+                    repeatDelay: 0.8,
                     ease: "easeInOut"
                 } : {}}
             >
