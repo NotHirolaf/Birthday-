@@ -1,8 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import Polaroid from "./Polaroid";
 
 interface Photo {
     id: number;
@@ -18,86 +17,62 @@ interface PolaroidGalleryProps {
     onBack?: () => void;
 }
 
+// All 24 photos across 3 pages
+const allPhotos: Photo[][] = [
+    // Page 1 (photos 1-8)
+    [
+        { id: 1, src: "/photos/photo-1.png", caption: "Memory 1", delay: 0.2, startX: -300, startY: 20, rotation: -5 },
+        { id: 2, src: "/photos/photo-2.png", caption: "Memory 2", delay: 0.4, startX: -300, startY: 20, rotation: 3 },
+        { id: 3, src: "/photos/photo-3.png", caption: "Memory 3", delay: 0.6, startX: -300, startY: 20, rotation: -7 },
+        { id: 4, src: "/photos/photo-4.png", caption: "Memory 4", delay: 0.8, startX: -300, startY: 20, rotation: 4 },
+        { id: 5, src: "/photos/photo-5.png", caption: "Memory 5", delay: 0.3, startX: 300, startY: 55, rotation: 6 },
+        { id: 6, src: "/photos/photo-6.png", caption: "Memory 6", delay: 0.5, startX: 300, startY: 55, rotation: -4 },
+        { id: 7, src: "/photos/photo-7.png", caption: "Memory 7", delay: 0.7, startX: 300, startY: 55, rotation: 8 },
+        { id: 8, src: "/photos/photo-8.png", caption: "Memory 8", delay: 0.9, startX: 300, startY: 55, rotation: -3 },
+    ],
+    // Page 2 (photos 9-16)
+    [
+        { id: 9, src: "/photos/photo-9.png", caption: "Memory 9", delay: 0.2, startX: -300, startY: 20, rotation: 5 },
+        { id: 10, src: "/photos/photo-10.png", caption: "Memory 10", delay: 0.4, startX: -300, startY: 20, rotation: -3 },
+        { id: 11, src: "/photos/photo-11.png", caption: "Memory 11", delay: 0.6, startX: -300, startY: 20, rotation: 6 },
+        { id: 12, src: "/photos/photo-12.png", caption: "Memory 12", delay: 0.8, startX: -300, startY: 20, rotation: -5 },
+        { id: 13, src: "/photos/photo-13.png", caption: "Memory 13", delay: 0.3, startX: 300, startY: 55, rotation: -6 },
+        { id: 14, src: "/photos/photo-14.png", caption: "Memory 14", delay: 0.5, startX: 300, startY: 55, rotation: 4 },
+        { id: 15, src: "/photos/photo-15.png", caption: "Memory 15", delay: 0.7, startX: 300, startY: 55, rotation: -7 },
+        { id: 16, src: "/photos/photo-16.png", caption: "Memory 16", delay: 0.9, startX: 300, startY: 55, rotation: 3 },
+    ],
+    // Page 3 (photos 17-24)
+    [
+        { id: 17, src: "/photos/photo-17.png", caption: "Memory 17", delay: 0.2, startX: -300, startY: 20, rotation: -4 },
+        { id: 18, src: "/photos/photo-18.png", caption: "Memory 18", delay: 0.4, startX: -300, startY: 20, rotation: 7 },
+        { id: 19, src: "/photos/photo-19.png", caption: "Memory 19", delay: 0.6, startX: -300, startY: 20, rotation: -6 },
+        { id: 20, src: "/photos/photo-20.png", caption: "Memory 20", delay: 0.8, startX: -300, startY: 20, rotation: 5 },
+        { id: 21, src: "/photos/photo-21.png", caption: "Memory 21", delay: 0.3, startX: 300, startY: 55, rotation: 7 },
+        { id: 22, src: "/photos/photo-22.png", caption: "Memory 22", delay: 0.5, startX: 300, startY: 55, rotation: -5 },
+        { id: 23, src: "/photos/photo-23.png", caption: "Memory 23", delay: 0.7, startX: 300, startY: 55, rotation: 6 },
+        { id: 24, src: "/photos/photo-24.png", caption: "Memory 24", delay: 0.9, startX: 300, startY: 55, rotation: -4 },
+    ],
+];
+
 export default function PolaroidGallery({ onBack }: PolaroidGalleryProps) {
     const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
-    // Strategically positioned photos in two rows
-    const topRowPhotos: Photo[] = [
-        {
-            id: 1,
-            src: "/photos/photo-1.png",
-            caption: "Memory 1",
-            delay: 0.2,
-            startX: -300,
-            startY: 20,
-            rotation: -5,
-        },
-        {
-            id: 2,
-            src: "/photos/photo-2.png",
-            caption: "Memory 2",
-            delay: 0.4,
-            startX: -300,
-            startY: 20,
-            rotation: 3,
-        },
-        {
-            id: 3,
-            src: "/photos/photo-3.png",
-            caption: "Memory 3",
-            delay: 0.6,
-            startX: -300,
-            startY: 20,
-            rotation: -7,
-        },
-        {
-            id: 4,
-            src: "/photos/photo-4.png",
-            caption: "Memory 4",
-            delay: 0.8,
-            startX: -300,
-            startY: 20,
-            rotation: 4,
-        },
-    ];
+    const [currentPage, setCurrentPage] = useState(0);
 
-    const bottomRowPhotos: Photo[] = [
-        {
-            id: 5,
-            src: "/photos/photo-5.png",
-            caption: "Memory 5",
-            delay: 0.3,
-            startX: window.innerWidth + 300,
-            startY: 55,
-            rotation: 6,
-        },
-        {
-            id: 6,
-            src: "/photos/photo-6.png",
-            caption: "Memory 6",
-            delay: 0.5,
-            startX: window.innerWidth + 300,
-            startY: 55,
-            rotation: -4,
-        },
-        {
-            id: 7,
-            src: "/photos/photo-7.png",
-            caption: "Memory 7",
-            delay: 0.7,
-            startX: window.innerWidth + 300,
-            startY: 55,
-            rotation: 8,
-        },
-        {
-            id: 8,
-            src: "/photos/photo-8.png",
-            caption: "Memory 8",
-            delay: 0.9,
-            startX: window.innerWidth + 300,
-            startY: 55,
-            rotation: -3,
-        },
-    ];
+    const currentPhotos = allPhotos[currentPage];
+    const topRowPhotos = currentPhotos.slice(0, 4);
+    const bottomRowPhotos = currentPhotos.slice(4, 8);
+
+    const goToNextPage = () => {
+        if (currentPage < allPhotos.length - 1) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const goToPrevPage = () => {
+        if (currentPage > 0) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
 
     return (
         <motion.div
@@ -118,113 +93,179 @@ export default function PolaroidGallery({ onBack }: PolaroidGalleryProps) {
             </motion.h2>
 
             {/* Top Row - Slides from left */}
-            <div className="relative h-1/3 flex items-center justify-center gap-8 mb-12">
-                {topRowPhotos.map((photo, index) => (
-                    <motion.div
-                        key={photo.id}
-                        initial={{
-                            x: -400,
-                            opacity: 0,
-                            rotate: photo.rotation - 10
-                        }}
-                        animate={{
-                            x: 0,
-                            opacity: 1,
-                            rotate: photo.rotation,
-                        }}
-                        transition={{
-                            delay: photo.delay,
-                            duration: 0.8,
-                            ease: "easeOut"
-                        }}
-                        whileHover={{
-                            scale: 1.1,
-                            rotate: 0,
-                            zIndex: 50,
-                            transition: { duration: 0.2 }
-                        }}
-                    >
-                        <div
-                            className="bg-white p-3 pb-8 shadow-2xl hover:shadow-3xl transition-shadow cursor-pointer"
-                            style={{
-                                transform: `rotate(${photo.rotation}deg)`,
-                                width: '220px'
+            <AnimatePresence mode="wait">
+                <motion.div
+                    key={`top-${currentPage}`}
+                    className="relative h-1/3 flex items-center justify-center gap-8 mb-12"
+                >
+                    {topRowPhotos.map((photo, index) => (
+                        <motion.div
+                            key={photo.id}
+                            initial={{
+                                x: -400,
+                                opacity: 0,
+                                rotate: photo.rotation - 10
                             }}
-                            onClick={() => setSelectedPhoto(photo)}
+                            animate={{
+                                x: 0,
+                                opacity: 1,
+                                rotate: photo.rotation,
+                            }}
+                            exit={{
+                                x: -400,
+                                opacity: 0,
+                            }}
+                            transition={{
+                                delay: photo.delay,
+                                duration: 0.8,
+                                ease: "easeOut"
+                            }}
+                            whileHover={{
+                                scale: 1.1,
+                                rotate: 0,
+                                zIndex: 50,
+                                transition: { duration: 0.2 }
+                            }}
                         >
-                            {/* Photo */}
-                            <div className="w-full h-60 bg-gray-900 relative overflow-hidden">
-                                <img
-                                    src={photo.src}
-                                    alt={photo.caption || `Photo ${photo.id}`}
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
-
-                            {/* Caption Area */}
-                            {photo.caption && (
-                                <div className="mt-2 text-center font-serif text-sm text-gray-700">
-                                    {photo.caption}
+                            <div
+                                className="bg-white p-3 pb-8 shadow-2xl hover:shadow-3xl transition-shadow cursor-pointer"
+                                style={{
+                                    transform: `rotate(${photo.rotation}deg)`,
+                                    width: '220px'
+                                }}
+                                onClick={() => setSelectedPhoto(photo)}
+                            >
+                                {/* Photo */}
+                                <div className="w-full h-60 bg-gray-900 relative overflow-hidden">
+                                    <img
+                                        src={photo.src}
+                                        alt={photo.caption || `Photo ${photo.id}`}
+                                        className="w-full h-full object-cover"
+                                    />
                                 </div>
-                            )}
-                        </div>
-                    </motion.div>
-                ))}
-            </div>
+
+                                {/* Caption Area */}
+                                {photo.caption && (
+                                    <div className="mt-2 text-center font-serif text-sm text-gray-700">
+                                        {photo.caption}
+                                    </div>
+                                )}
+                            </div>
+                        </motion.div>
+                    ))}
+                </motion.div>
+            </AnimatePresence>
 
             {/* Bottom Row - Slides from right */}
-            <div className="relative h-1/3 flex items-center justify-center gap-8">
-                {bottomRowPhotos.map((photo, index) => (
-                    <motion.div
-                        key={photo.id}
-                        initial={{
-                            x: 400,
-                            opacity: 0,
-                            rotate: photo.rotation + 10
-                        }}
-                        animate={{
-                            x: 0,
-                            opacity: 1,
-                            rotate: photo.rotation,
-                        }}
-                        transition={{
-                            delay: photo.delay,
-                            duration: 0.8,
-                            ease: "easeOut"
-                        }}
-                        whileHover={{
-                            scale: 1.1,
-                            rotate: 0,
-                            zIndex: 50,
-                            transition: { duration: 0.2 }
-                        }}
-                    >
-                        <div
-                            className="bg-white p-3 pb-8 shadow-2xl hover:shadow-3xl transition-shadow cursor-pointer"
-                            style={{
-                                transform: `rotate(${photo.rotation}deg)`,
-                                width: '220px'
+            <AnimatePresence mode="wait">
+                <motion.div
+                    key={`bottom-${currentPage}`}
+                    className="relative h-1/3 flex items-center justify-center gap-8"
+                >
+                    {bottomRowPhotos.map((photo, index) => (
+                        <motion.div
+                            key={photo.id}
+                            initial={{
+                                x: 400,
+                                opacity: 0,
+                                rotate: photo.rotation + 10
                             }}
-                            onClick={() => setSelectedPhoto(photo)}
+                            animate={{
+                                x: 0,
+                                opacity: 1,
+                                rotate: photo.rotation,
+                            }}
+                            exit={{
+                                x: 400,
+                                opacity: 0,
+                            }}
+                            transition={{
+                                delay: photo.delay,
+                                duration: 0.8,
+                                ease: "easeOut"
+                            }}
+                            whileHover={{
+                                scale: 1.1,
+                                rotate: 0,
+                                zIndex: 50,
+                                transition: { duration: 0.2 }
+                            }}
                         >
-                            {/* Photo */}
-                            <div className="w-full h-60 bg-gray-900 relative overflow-hidden">
-                                <img
-                                    src={photo.src}
-                                    alt={photo.caption || `Photo ${photo.id}`}
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
-
-                            {/* Caption Area */}
-                            {photo.caption && (
-                                <div className="mt-2 text-center font-serif text-sm text-gray-700">
-                                    {photo.caption}
+                            <div
+                                className="bg-white p-3 pb-8 shadow-2xl hover:shadow-3xl transition-shadow cursor-pointer"
+                                style={{
+                                    transform: `rotate(${photo.rotation}deg)`,
+                                    width: '220px'
+                                }}
+                                onClick={() => setSelectedPhoto(photo)}
+                            >
+                                {/* Photo */}
+                                <div className="w-full h-60 bg-gray-900 relative overflow-hidden">
+                                    <img
+                                        src={photo.src}
+                                        alt={photo.caption || `Photo ${photo.id}`}
+                                        className="w-full h-full object-cover"
+                                    />
                                 </div>
-                            )}
-                        </div>
-                    </motion.div>
-                ))}
+
+                                {/* Caption Area */}
+                                {photo.caption && (
+                                    <div className="mt-2 text-center font-serif text-sm text-gray-700">
+                                        {photo.caption}
+                                    </div>
+                                )}
+                            </div>
+                        </motion.div>
+                    ))}
+                </motion.div>
+            </AnimatePresence>
+
+            {/* Pagination Controls */}
+            <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-12 z-50">
+                {/* Previous Button */}
+                <motion.button
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.2, duration: 0.4 }}
+                    onClick={goToPrevPage}
+                    disabled={currentPage === 0}
+                    className={`px-5 py-2.5 bg-white/90 backdrop-blur-sm text-[#4a4a4a] rounded-full font-serif text-sm hover:bg-white hover:shadow-lg transition-all shadow-md border border-[#dcd8d0] flex items-center gap-2 ${currentPage === 0 ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'
+                        }`}
+                >
+                    <span className="text-lg">←</span>
+                    <span>Prev</span>
+                </motion.button>
+
+                {/* Page Indicators */}
+                <div className="flex items-center gap-3">
+                    {allPhotos.map((_, index) => (
+                        <motion.button
+                            key={index}
+                            initial={{ opacity: 0, scale: 0 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 1.3 + index * 0.1, duration: 0.3 }}
+                            onClick={() => setCurrentPage(index)}
+                            className={`w-3 h-3 rounded-full transition-all cursor-pointer ${currentPage === index
+                                ? 'bg-[#4a4a4a] scale-125'
+                                : 'bg-[#4a4a4a]/30 hover:bg-[#4a4a4a]/50'
+                                }`}
+                        />
+                    ))}
+                </div>
+
+                {/* Next Button */}
+                <motion.button
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.2, duration: 0.4 }}
+                    onClick={goToNextPage}
+                    disabled={currentPage === allPhotos.length - 1}
+                    className={`px-5 py-2.5 bg-white/90 backdrop-blur-sm text-[#4a4a4a] rounded-full font-serif text-sm hover:bg-white hover:shadow-lg transition-all shadow-md border border-[#dcd8d0] flex items-center gap-2 ${currentPage === allPhotos.length - 1 ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'
+                        }`}
+                >
+                    <span>Next</span>
+                    <span className="text-lg">→</span>
+                </motion.button>
             </div>
 
             {/* Back Button - Top Left Corner */}
