@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Lora } from "next/font/google";
+import { Lora, Great_Vibes } from "next/font/google";
 import "./globals.css";
 
 const lora = Lora({
@@ -7,6 +7,12 @@ const lora = Lora({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
+});
+
+const greatVibes = Great_Vibes({
+  variable: "--font-great-vibes",
+  subsets: ["latin"],
+  weight: ["400"],
 });
 
 export const metadata: Metadata = {
@@ -22,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${lora.variable} antialiased bg-[#fdfbf7] text-[#4a4a4a] overflow-hidden`}
+        className={`${lora.variable} ${greatVibes.variable} antialiased bg-[#fdfbf7] text-[#4a4a4a] overflow-hidden`}
       >
         {children}
       </body>

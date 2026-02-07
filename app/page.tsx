@@ -23,8 +23,7 @@ Happy 19th Birthday! You are officially old now. Just kidding. On this special d
 
 Seriously though, thank you for everything. Especially for all the food and snacks :p. Sorry about that. Keep being the kind person you are and light up the lives of those around you. Don't worry too much about things, I am sure you will be successful in whatever you choose to do. I hope you will enjoy your day today, you deserve it :)
 
-Your Friend,
-Farrel`;
+Your Friend,`;
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseInt(e.target.value);
@@ -76,6 +75,20 @@ Farrel`;
           >
             <div className="max-w-2xl w-full bg-[#fdfbf7] shadow-2xl border border-[#dcd8d0] rounded-sm p-8 sm:p-12 relative max-h-[80vh] overflow-y-auto custom-scrollbar">
               <Typewriter text={letterText} onComplete={() => setLetterComplete(true)} instant={letterComplete} />
+
+              {/* Signature */}
+              <AnimatePresence>
+                {letterComplete && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{ delay: 0.5, duration: 1, ease: "easeOut" }}
+                    className="mt-2 font-signature text-4xl sm:text-5xl text-[#c15f5f] transform -rotate-2 origin-left ml-4"
+                  >
+                    Farrel
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* Decorative Sticker - top right corner */}
               {showLetter && (

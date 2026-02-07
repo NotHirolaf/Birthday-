@@ -11,6 +11,11 @@
 
 :root {
   --font-lora: "Lora", serif;
+  --font-great-vibes: "Great Vibes", cursive;
+}
+
+.font-signature {
+  font-family: var(--font-great-vibes);
 }
 
 body {
