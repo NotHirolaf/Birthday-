@@ -21,7 +21,7 @@ export default function Home() {
 
 Happy 19th Birthday! You are officially old now. Just kidding. On this special day, I just wanted to take the time to appreciate and thank you for being such a good friend to me. I know we haven't known each other for that long, but you have made the transition into university much easier and more fun. I hope this is only the beginning of our friendship and that we will continue to make many more memories together in Gangalang. 
 
-Seriously though, thank you for everything. Especially for all the food and snacks :p. Keep being the kind person you are and light up the lives of those around you. Don't worry too much about things, I am sure you will be successful in whatever you choose to do. I hope you enjoyed your day today, you deserve it :).
+Seriously though, thank you for everything. Especially for all the food and snacks :p. Keep being the kind person you are and light up the lives of those around you. Don't worry too much about things, I am sure you will be successful in whatever you choose to do. I hope you will enjoy your day today, you deserve it :)
 
 Your Friend,
 Farrel`;

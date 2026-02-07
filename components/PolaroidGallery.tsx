@@ -25,7 +25,7 @@ const allPhotos: Photo[][] = [
         { id: 2, src: "/photos/photo-2.JPG", caption: "Memory 2", delay: 0.4, startX: -300, startY: 20, rotation: 3 },
         { id: 3, src: "/photos/photo-3.JPG", caption: "Memory 3", delay: 0.6, startX: -300, startY: 20, rotation: -7 },
         { id: 4, src: "/photos/photo-4.JPG", caption: "Memory 4", delay: 0.8, startX: -300, startY: 20, rotation: 4 },
-        { id: 5, src: "/photos/photo-5.jpeg", caption: "Memory 5", delay: 0.3, startX: 300, startY: 55, rotation: 6 },
+        { id: 5, src: "/photos/photo-5.jpg", caption: "Memory 5", delay: 0.3, startX: 300, startY: 55, rotation: 6 },
         { id: 6, src: "/photos/photo-6.jpg", caption: "Memory 6", delay: 0.5, startX: 300, startY: 55, rotation: -4 },
         { id: 7, src: "/photos/photo-7.jpg", caption: "Memory 7", delay: 0.7, startX: 300, startY: 55, rotation: 8 },
         { id: 8, src: "/photos/photo-8.jpg", caption: "Memory 8", delay: 0.9, startX: 300, startY: 55, rotation: -3 },
