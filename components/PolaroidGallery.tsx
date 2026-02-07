@@ -116,10 +116,11 @@ export default function PolaroidGallery({ onBack }: PolaroidGalleryProps) {
                                 opacity: 0,
                             }}
                             transition={{
-                                delay: photo.delay,
-                                duration: 0.8,
-                                ease: "easeOut"
+                                delay: photo.delay * 0.6,
+                                duration: 0.5,
+                                ease: "circOut"
                             }}
+                            style={{ willChange: "transform, opacity" }}
                             whileHover={{
                                 scale: 1.1,
                                 rotate: 0,
@@ -180,10 +181,11 @@ export default function PolaroidGallery({ onBack }: PolaroidGalleryProps) {
                                 opacity: 0,
                             }}
                             transition={{
-                                delay: photo.delay,
-                                duration: 0.8,
-                                ease: "easeOut"
+                                delay: photo.delay * 0.6,
+                                duration: 0.5,
+                                ease: "circOut"
                             }}
+                            style={{ willChange: "transform, opacity" }}
                             whileHover={{
                                 scale: 1.1,
                                 rotate: 0,
