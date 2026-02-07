@@ -19,7 +19,9 @@ export default function BackgroundLeaves() {
     useEffect(() => {
         // Generate random leaves primarily on the client to avoid hydration mismatch
         const colors = ["#d65f5f", "#c15f5f", "#e68a8a", "#d97b7b", "#b04a4a"]; // Reddish maple colors
-        const leafCount = 80; // Increased count
+        // Reduce leaf count on mobile for better performance
+        const isMobile = window.innerWidth <= 430;
+        const leafCount = isMobile ? 35 : 80;
         const newLeaves = Array.from({ length: leafCount }).map((_, i) => ({
             id: i,
             x: Math.random() * 100, // percentage

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface Photo {
     id: number;
@@ -57,13 +57,34 @@ const allPhotos: Photo[][] = [
 export default function PolaroidGallery({ onBack }: PolaroidGalleryProps) {
     const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
     const [currentPage, setCurrentPage] = useState(0);
+    const [isMobile, setIsMobile] = useState(false);
 
-    const currentPhotos = allPhotos[currentPage];
-    const topRowPhotos = currentPhotos.slice(0, 4);
-    const bottomRowPhotos = currentPhotos.slice(4, 8);
+    // Detect mobile on mount
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth <= 430);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    // Flatten all photos into a single array
+    const flatPhotos = allPhotos.flat();
+
+    // Mobile: 4 pages of 6 photos, Desktop: 3 pages of 8 photos
+    const photosPerPage = isMobile ? 6 : 8;
+    const totalPages = isMobile ? 4 : 3;
+
+    // Get current page's photos based on photosPerPage
+    const startIndex = currentPage * photosPerPage;
+    const visiblePhotos = flatPhotos.slice(startIndex, startIndex + photosPerPage);
+
+    // Mobile: 3 rows of 2, Desktop: 2 rows of 4
+    const topRowPhotos = isMobile ? visiblePhotos.slice(0, 2) : visiblePhotos.slice(0, 4);
+    const middleRowPhotos = isMobile ? visiblePhotos.slice(2, 4) : []; // Only on mobile
+    const bottomRowPhotos = isMobile ? visiblePhotos.slice(4, 6) : visiblePhotos.slice(4, 8);
 
     const goToNextPage = () => {
-        if (currentPage < allPhotos.length - 1) {
+        if (currentPage < totalPages - 1) {
             setCurrentPage(currentPage + 1);
         }
     };
@@ -80,14 +101,14 @@ export default function PolaroidGallery({ onBack }: PolaroidGalleryProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6 }}
-            className="fixed inset-0 bg-gradient-to-b from-[#f5f1e8] to-[#e8dfc8] z-30 overflow-hidden"
+            className="fixed inset-0 bg-gradient-to-b from-[#f5f1e8] to-[#e8dfc8] z-30 overflow-y-auto"
         >
             {/* Title */}
             <motion.h2
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.6 }}
-                className="text-4xl font-serif text-center mt-12 mb-8 text-[#4a4a4a]"
+                className="text-2xl sm:text-4xl font-serif text-center mt-6 sm:mt-12 mb-4 sm:mb-8 text-[#4a4a4a]"
             >
                 Gangalang Memories ✨
             </motion.h2>
@@ -96,7 +117,7 @@ export default function PolaroidGallery({ onBack }: PolaroidGalleryProps) {
             <AnimatePresence mode="wait">
                 <motion.div
                     key={`top-${currentPage}`}
-                    className="relative h-1/3 flex items-center justify-center gap-8 mb-12"
+                    className="relative h-auto flex flex-wrap items-center justify-center gap-2 sm:gap-8 mb-4 sm:mb-8 px-2 sm:px-0 pt-12 sm:pt-0"
                 >
                     {topRowPhotos.map((photo, index) => (
                         <motion.div
@@ -129,15 +150,14 @@ export default function PolaroidGallery({ onBack }: PolaroidGalleryProps) {
                             }}
                         >
                             <div
-                                className="bg-white p-3 pb-8 shadow-2xl hover:shadow-3xl transition-shadow cursor-pointer"
+                                className="bg-white p-2 sm:p-3 pb-6 sm:pb-8 shadow-2xl hover:shadow-3xl transition-shadow cursor-pointer w-[130px] sm:w-[220px]"
                                 style={{
-                                    transform: `rotate(${photo.rotation}deg)`,
-                                    width: '220px'
+                                    transform: `rotate(${photo.rotation}deg)`
                                 }}
                                 onClick={() => setSelectedPhoto(photo)}
                             >
                                 {/* Photo */}
-                                <div className="w-full h-60 bg-gray-900 relative overflow-hidden">
+                                <div className="w-full h-[100px] sm:h-60 bg-gray-900 relative overflow-hidden">
                                     <img
                                         src={photo.src}
                                         alt={photo.caption || `Photo ${photo.id}`}
@@ -157,11 +177,74 @@ export default function PolaroidGallery({ onBack }: PolaroidGalleryProps) {
                 </motion.div>
             </AnimatePresence>
 
+            {/* Middle Row - Only on mobile (3 rows of 2 layout) */}
+            {middleRowPhotos.length > 0 && (
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={`middle-${currentPage}`}
+                        className="relative h-auto flex flex-wrap items-center justify-center gap-2 mb-4 px-2"
+                    >
+                        {middleRowPhotos.map((photo) => (
+                            <motion.div
+                                key={photo.id}
+                                initial={{
+                                    x: -400,
+                                    opacity: 0,
+                                    rotate: photo.rotation - 10
+                                }}
+                                animate={{
+                                    x: 0,
+                                    opacity: 1,
+                                    rotate: photo.rotation,
+                                }}
+                                exit={{
+                                    x: -400,
+                                    opacity: 0,
+                                }}
+                                transition={{
+                                    delay: photo.delay * 0.6,
+                                    duration: 0.5,
+                                    ease: "circOut"
+                                }}
+                                style={{ willChange: "transform, opacity" }}
+                                whileHover={{
+                                    scale: 1.1,
+                                    rotate: 0,
+                                    zIndex: 50,
+                                    transition: { duration: 0.2 }
+                                }}
+                            >
+                                <div
+                                    className="bg-white p-2 pb-6 shadow-2xl hover:shadow-3xl transition-shadow cursor-pointer w-[130px]"
+                                    style={{
+                                        transform: `rotate(${photo.rotation}deg)`
+                                    }}
+                                    onClick={() => setSelectedPhoto(photo)}
+                                >
+                                    <div className="w-full h-[100px] bg-gray-900 relative overflow-hidden">
+                                        <img
+                                            src={photo.src}
+                                            alt={photo.caption || `Photo ${photo.id}`}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                    {photo.caption && (
+                                        <div className="mt-2 text-center font-serif text-sm text-gray-700">
+                                            {photo.caption}
+                                        </div>
+                                    )}
+                                </div>
+                            </motion.div>
+                        ))}
+                    </motion.div>
+                </AnimatePresence>
+            )}
+
             {/* Bottom Row - Slides from right */}
             <AnimatePresence mode="wait">
                 <motion.div
                     key={`bottom-${currentPage}`}
-                    className="relative h-1/3 flex items-center justify-center gap-8"
+                    className="relative h-auto flex flex-wrap items-center justify-center gap-2 sm:gap-8 px-2 sm:px-0 pb-20 sm:pb-0"
                 >
                     {bottomRowPhotos.map((photo, index) => (
                         <motion.div
@@ -194,15 +277,14 @@ export default function PolaroidGallery({ onBack }: PolaroidGalleryProps) {
                             }}
                         >
                             <div
-                                className="bg-white p-3 pb-8 shadow-2xl hover:shadow-3xl transition-shadow cursor-pointer"
+                                className="bg-white p-2 sm:p-3 pb-6 sm:pb-8 shadow-2xl hover:shadow-3xl transition-shadow cursor-pointer w-[130px] sm:w-[220px]"
                                 style={{
-                                    transform: `rotate(${photo.rotation}deg)`,
-                                    width: '220px'
+                                    transform: `rotate(${photo.rotation}deg)`
                                 }}
                                 onClick={() => setSelectedPhoto(photo)}
                             >
                                 {/* Photo */}
-                                <div className="w-full h-60 bg-gray-900 relative overflow-hidden">
+                                <div className="w-full h-[100px] sm:h-60 bg-gray-900 relative overflow-hidden">
                                     <img
                                         src={photo.src}
                                         alt={photo.caption || `Photo ${photo.id}`}
@@ -222,8 +304,8 @@ export default function PolaroidGallery({ onBack }: PolaroidGalleryProps) {
                 </motion.div>
             </AnimatePresence>
 
-            {/* Pagination Controls */}
-            <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-12 z-50">
+            {/* Pagination Controls - positioned higher to avoid blocking content */}
+            <div className="fixed bottom-12 sm:bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-4 sm:gap-12 z-50">
                 {/* Previous Button */}
                 <motion.button
                     initial={{ opacity: 0, y: 20 }}
@@ -240,7 +322,7 @@ export default function PolaroidGallery({ onBack }: PolaroidGalleryProps) {
 
                 {/* Page Indicators */}
                 <div className="flex items-center gap-3">
-                    {allPhotos.map((_, index) => (
+                    {Array.from({ length: totalPages }).map((_, index) => (
                         <motion.button
                             key={index}
                             initial={{ opacity: 0, scale: 0 }}
@@ -261,8 +343,8 @@ export default function PolaroidGallery({ onBack }: PolaroidGalleryProps) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 1.2, duration: 0.4 }}
                     onClick={goToNextPage}
-                    disabled={currentPage === allPhotos.length - 1}
-                    className={`px-5 py-2.5 bg-white/90 backdrop-blur-sm text-[#4a4a4a] rounded-full font-serif text-sm hover:bg-white hover:shadow-lg transition-all shadow-md border border-[#dcd8d0] flex items-center gap-2 ${currentPage === allPhotos.length - 1 ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'
+                    disabled={currentPage === totalPages - 1}
+                    className={`px-5 py-2.5 bg-white/90 backdrop-blur-sm text-[#4a4a4a] rounded-full font-serif text-sm hover:bg-white hover:shadow-lg transition-all shadow-md border border-[#dcd8d0] flex items-center gap-2 ${currentPage === totalPages - 1 ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'
                         }`}
                 >
                     <span>Next</span>
@@ -276,7 +358,7 @@ export default function PolaroidGallery({ onBack }: PolaroidGalleryProps) {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 1.5, duration: 0.4 }}
                 onClick={onBack}
-                className="fixed top-8 left-8 px-5 py-2.5 bg-white/90 backdrop-blur-sm text-[#4a4a4a] rounded-full font-serif text-sm hover:bg-white hover:shadow-lg transition-all shadow-md border border-[#dcd8d0] z-50 flex items-center gap-2"
+                className="fixed top-4 left-4 sm:top-8 sm:left-8 px-3 py-2 sm:px-5 sm:py-2.5 bg-white/90 backdrop-blur-sm text-[#4a4a4a] rounded-full font-serif text-xs sm:text-sm hover:bg-white hover:shadow-lg transition-all shadow-md border border-[#dcd8d0] z-50 flex items-center gap-1 sm:gap-2"
             >
                 <span className="text-lg">←</span>
                 <span>Back</span>

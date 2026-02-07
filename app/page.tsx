@@ -71,9 +71,9 @@ Your Friend,`;
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="flex items-center justify-center min-h-screen p-4 sm:p-8 z-20 relative"
+            className="flex items-center justify-center min-h-screen p-2 sm:p-8 z-20 relative"
           >
-            <div className="max-w-2xl w-full bg-[#fdfbf7] shadow-2xl border border-[#dcd8d0] rounded-sm p-8 sm:p-12 relative max-h-[80vh] overflow-y-auto custom-scrollbar">
+            <div className="max-w-2xl w-full bg-[#fdfbf7] shadow-2xl border border-[#dcd8d0] rounded-sm p-4 sm:p-8 md:p-12 relative max-h-[70vh] sm:max-h-[85vh] overflow-y-auto custom-scrollbar">
               <Typewriter text={letterText} onComplete={() => setLetterComplete(true)} instant={letterComplete} />
 
               {/* Signature */}
@@ -103,7 +103,7 @@ Your Friend,`;
                   }}
                   src="/pngegg.png"
                   alt="Decorative sticker"
-                  className="absolute right-4 top-4 w-28 h-auto z-10"
+                  className="absolute right-2 top-2 w-16 sm:w-28 h-auto z-10"
                   style={{
                     filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.25))',
                     transform: 'rotate(12deg)',
@@ -134,7 +134,7 @@ Your Friend,`;
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.5, duration: 0.4 }}
-          className="fixed top-8 right-8 z-50 bg-[#fdfbf7]/95 backdrop-blur-sm px-5 py-3 rounded-full shadow-xl border border-[#dcd8d0]"
+          className="fixed top-4 right-4 sm:top-8 sm:right-8 z-50 bg-[#fdfbf7]/95 backdrop-blur-sm px-3 py-2 sm:px-5 sm:py-3 rounded-full shadow-xl border border-[#dcd8d0]"
         >
           <div className="flex items-center gap-4">
             <button
@@ -150,7 +150,7 @@ Your Friend,`;
               max="100"
               value={isMuted ? 0 : volume}
               onChange={handleVolumeChange}
-              className="w-32 h-2 rounded-full appearance-none cursor-pointer"
+              className="w-20 sm:w-32 h-2 rounded-full appearance-none cursor-pointer"
               style={{
                 background: `linear-gradient(to right, #c15f5f 0%, #c15f5f ${isMuted ? 0 : volume}%, #e8e4d9 ${isMuted ? 0 : volume}%, #e8e4d9 100%)`
               }}

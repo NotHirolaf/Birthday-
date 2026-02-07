@@ -64,25 +64,25 @@ export default function Envelope({ onOpen, onAudioReady }: { onOpen: () => void;
                 </motion.div>
 
                 {/* Envelope Back Body */}
-                <div className="relative w-72 h-44 bg-[#f0ede6] shadow-xl rounded-sm z-20 overflow-hidden border border-[#dcd8d0]">
+                <div className="relative w-56 sm:w-72 h-36 sm:h-44 bg-[#f0ede6] shadow-xl rounded-sm z-20 overflow-hidden border border-[#dcd8d0]">
                     {/* Pocket pattern/shading */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent top-10" />
                 </div>
 
                 {/* Envelope Front Body (The pocket part) */}
-                <div className="absolute bottom-0 left-0 w-full h-0 z-30 border-l-[144px] border-l-transparent border-r-[144px] border-r-transparent border-b-[90px] border-b-[#fcfaf7] drop-shadow-sm" />
-                <div className="absolute bottom-0 left-0 w-full h-0 z-30 border-l-[144px] border-l-transparent border-r-[144px] border-r-transparent border-b-[90px] border-b-[#f7f5f0] clip-path-polygon" />
+                <div className="absolute bottom-0 left-0 w-full h-0 z-30 border-l-[112px] sm:border-l-[144px] border-l-transparent border-r-[112px] sm:border-r-[144px] border-r-transparent border-b-[70px] sm:border-b-[90px] border-b-[#fcfaf7] drop-shadow-sm" />
+                <div className="absolute bottom-0 left-0 w-full h-0 z-30 border-l-[112px] sm:border-l-[144px] border-l-transparent border-r-[112px] sm:border-r-[144px] border-r-transparent border-b-[70px] sm:border-b-[90px] border-b-[#f7f5f0] clip-path-polygon" />
 
                 {/* The Flap (Top triangle) */}
                 <motion.div
-                    className="absolute top-0 left-0 w-full h-0 z-40 border-l-[144px] border-l-transparent border-r-[144px] border-r-transparent border-t-[90px] border-t-[#ebe7e0] origin-top drop-shadow-md"
+                    className="absolute top-0 left-0 w-full h-0 z-40 border-l-[112px] sm:border-l-[144px] border-l-transparent border-r-[112px] sm:border-r-[144px] border-r-transparent border-t-[70px] sm:border-t-[90px] border-t-[#ebe7e0] origin-top drop-shadow-md"
                     initial={{ rotateX: 0 }}
                     animate={step !== "closed" ? { rotateX: 180, zIndex: 1 } : { rotateX: 0 }}
                     transition={{ duration: 0.6, ease: "easeInOut" }}
                 >
                     {/* Maple Leaf Sticker attached to Flap */}
                     <motion.div
-                        className="absolute -top-[50px] left-1/2 transform -translate-x-1/2 z-50"
+                        className="absolute -top-[40px] sm:-top-[50px] left-1/2 transform -translate-x-1/2 z-50"
                         animate={step !== "closed" ? { opacity: 0 } : { opacity: 1 }}
                         transition={{ duration: 0.2 }}
                     >
